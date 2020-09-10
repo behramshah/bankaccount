@@ -1,0 +1,131 @@
+using System;
+
+namespace bankaccount
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            string choice;
+            Console.WriteLine("For new Individual account type - indnew");
+            Console.WriteLine("For new Company account type- compnew ");
+            Console.WriteLine("Type -end- to exit");
+            choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "indnew":
+                case "compnew":
+                    CreateAcc();
+                    break;                
+                case "end":
+                    break;
+            }
+
+            void CreateAcc()
+            {
+                Console.WriteLine("Insert amount");
+                int amount = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Insert new account number");
+                int accountnumber = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Insert account opening date day");
+                int daydate = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Insert account opening date month");
+                int monthdate = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Insert account opening date year");
+                int yeardate = Convert.ToInt32(Console.ReadLine());
+                if (choice == "indnew")
+                {
+                    Console.WriteLine("Insert account type");
+                    string accounttype = Console.ReadLine();
+                    Individual fiziki = new Individual(amount, accountnumber, daydate, monthdate, yeardate, accounttype);
+                    fiziki.DisplayDate();
+                    fiziki.DeductAmount();
+                    fiziki.Interest();
+
+                }
+                else if (choice == "compnew")
+                {
+                    Console.WriteLine("Insert account type");
+                    string accounttype = Console.ReadLine();
+                    Console.WriteLine("Insert company name");
+                    string companyname = Console.ReadLine();
+                    Company MMC = new Company(amount, accountnumber, daydate, monthdate, yeardate, accounttype, companyname);
+                    MMC.Interest();
+                }
+
+            }
+
+
+
+        }
+    }
+    public class BankAccount
+    {
+        int amount;
+        int accountnumber;
+        int daydate;
+        int monthdate;
+        int yeardate;
+
+        public int Amount { get; set; }
+        public int AccountNumber { get; set; }
+        public int Daydate { get; set; }
+        public int Monthdate
+        {
+            get { return monthdate; }
+            set { if (value < 13) { monthdate = value; } }
+        }
+        public int Yeardate
+        {
+            get { return yeardate; }
+            set { if (value > 1901) { yeardate = value; } }
+
+        }
+
+        public BankAccount() { }
+        public BankAccount(int amount, int accountnumber, int daydate, int monthdate, int yeardate)
+        { Amount = amount; AccountNumber = accountnumber; Daydate = daydate; Monthdate = monthdate; Yeardate = yeardate; }
+        public virtual int DeductAmount()
+        {
+            Console.WriteLine($"Your account balance is {Amount} AZN. Type how much you wish to withdraw");
+            int withdraw = Convert.ToInt32(Console.ReadLine());
+            Amount = Amount - withdraw;
+            Console.WriteLine("After withdraw operation your account balance equal:" + Amount + " No comission was deducted");
+            return Amount;
+        }
+        public virtual void DisplayDate()
+        {
+            Console.WriteLine($"Your account opened in {Daydate}{Monthdate}{Yeardate}");
+        }
+
+    }
+    public class Individual : BankAccount
+    {
+        string accounttype;
+        public string Accounttype
+        {
+            get { return accounttype; }
+            set { accounttype = value; }
+        }
+        public Individual(int amount, int accountnumber, int daydate, int monthdate, int yeardate, string accounttype) : base(amount, accountnumber, daydate, monthdate, yeardate) { Accounttype = accounttype; }
+        public Individual() { }
+
+        public virtual double Interest()
+        {
+            Console.WriteLine("Enter the interest rate");
+            int interest = Convert.ToInt32(Console.ReadLine());
+            double accuminterest = Amount * interest / 100;
+            Console.WriteLine($"With rate {interest}%, accumulated interest during the year will be {accuminterest}");
+            return accuminterest;
+        }
+
+
+    }
+    public class Company : Individual
+    {
+        public string Companyname { get; set; }
+        public Company() { }
+        public Company(int amount, int accountnumber, int daydate, int monthdate, int yeardate, string accounttype, string companyname) : base(amount, accountnumber, daydate, monthdate, yeardate, accounttype) { Companyname = companyname; }
+    }
+}
+
